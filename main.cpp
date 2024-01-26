@@ -1,8 +1,24 @@
 #include <windows.h>
 #include <iostream>
+#include <string>
 
-#define IR_REMOTE_1_1 "FFA25D"
-#define IR_REMOTE_2_1 "FF629D"
+#define IR_REMOTE_1_1 0xFFA25D
+#define IR_REMOTE_2_1 0xFF629D
+
+void button_command(int command){
+    switch (command) {
+    case IR_REMOTE_1_1:
+        std::cout << "Command 1 was pressed \n";
+        break;
+
+    case IR_REMOTE_2_1:
+        std::cout << "Command 2 was pressed \n";
+        break;
+
+    default:
+        break;
+    }
+}
 
 int main() {
     // Open the serial port
@@ -33,6 +49,7 @@ int main() {
     const DWORD bufSize = 256;
     char tmpChar;
     std::string receivedData;
+    int command;
 
     while (1) {
         if (ReadFile(hSerial, &tmpChar, 1, &bytesRead, NULL) && bytesRead > 0) {
@@ -44,13 +61,21 @@ int main() {
                 // Process the data
                 std::cout << "Data read from serial port: " << receivedData;
 
+                try {
+                    command = stoi(receivedData, 0, 16); 
+                    button_command(command);
+                }
+                catch(const std::exception& e) {
+                    std::cerr << e.what() << '\n';
+                }
+                
+                
                 // Clear the received data for the next message
                 receivedData.clear();
             }
         } else {
             // Handle error or no data
             std::cerr << "Error reading from serial port or no data available" << std::endl;
-            Sleep(1000);
         }
     }
 
