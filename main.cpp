@@ -1,9 +1,12 @@
 #include <windows.h>
 #include <iostream>
 
+#define IR_REMOTE_1_1 "FFA25D"
+#define IR_REMOTE_2_1 "FF629D"
+
 int main() {
     // Open the serial port
-    HANDLE hSerial = CreateFile("COM8",
+    HANDLE hSerial = CreateFile("COM3",
                                 GENERIC_READ | GENERIC_WRITE,
                                 0,
                                 0,
@@ -27,11 +30,28 @@ int main() {
 
     // Read data
     DWORD bytesRead;
-    char buffer[256] = {0};
-    if (!ReadFile(hSerial, buffer, sizeof(buffer), &bytesRead, NULL)) {
-        std::cerr << "Error reading from serial port" << std::endl;
-    } else {
-        std::cout << "Data read from serial port: " << buffer << std::endl;
+    const DWORD bufSize = 256;
+    char tmpChar;
+    std::string receivedData;
+
+    while (1) {
+        if (ReadFile(hSerial, &tmpChar, 1, &bytesRead, NULL) && bytesRead > 0) {
+            // Append the read character to the string
+            receivedData += tmpChar;
+
+            // Check for the delimiter
+            if (tmpChar == '\n') { // Modify if your delimiter is different
+                // Process the data
+                std::cout << "Data read from serial port: " << receivedData;
+
+                // Clear the received data for the next message
+                receivedData.clear();
+            }
+        } else {
+            // Handle error or no data
+            std::cerr << "Error reading from serial port or no data available" << std::endl;
+            Sleep(1000);
+        }
     }
 
     // Close the serial port
