@@ -1,35 +1,28 @@
 #include <windows.h>
 #include <iostream>
 #include <string>
+#include <cstdint>
 
 #define IR_REMOTE_1_1 0xFFA25D
 #define IR_REMOTE_2_1 0xFF629D
 
-
 class Remote {
-  public:
+public:
     uint8_t mode; // 1: Calculator, 2: Current Time, 3: Switch LED
-    unsigned long heldTime; // Time since the button is pressed
+    bool isButtonHeld;
 
-    Remote() : mode(0), heldTime(0) {} // Constructor to initialize variables
+    Remote() : mode(0), isButtonHeld(false) {}
 
     void updateMode(uint8_t newMode) {
-      mode = newMode;
-      heldTime = millis(); // Update the time when mode changes
+        mode = newMode;
+        isButtonHeld = false; // Reset the hold state whenever the mode changes
     }
 
-    unsigned long getHeldDuration() {
-      if (mode != 0) { // Check if a mode is active
-        return millis() - heldTime; // Return how long the button has been held
-      }
-      return 0;
-    }
-
-    void reset() {
-      mode = 0; // Reset mode
-      heldTime = 0; // Reset held time
+    void setButtonHeld(bool held) {
+        isButtonHeld = held;
     }
 };
+
 
 void button_command(u_int64 command){
     switch (command) {
