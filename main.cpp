@@ -48,6 +48,23 @@ void button_command(u_int64 command){
 }
 
 int main() {
+    /*
+    // Create an instance of the Remote class named 'myRemote'.
+    Remote myRemote;
+
+    // Example usage of the class:
+    // Call the 'updateMode' function to set the mode of 'myRemote'.
+    myRemote.updateMode(1);
+
+    // Call the 'setButtonHeld' function to indicate a button is being held.
+    myRemote.setButtonHeld(true);
+
+    // Use the member variables:
+    // Check and print the current mode and button hold state of 'myRemote'.
+    std::cout << "Current mode: " << static_cast<int>(myRemote.mode) << std::endl;
+    std::cout << "Is a button held: " << (myRemote.isButtonHeld ? "Yes" : "No") << std::endl; 
+    */
+
     // Open the serial port
     HANDLE hSerial = CreateFile("COM8",
                                 GENERIC_READ | GENERIC_WRITE,
@@ -104,20 +121,6 @@ int main() {
             // Handle error or no data
             std::cerr << "Error reading from serial port or no data available" << std::endl;
         
-            // Create an instance of the Remote class named 'myRemote'.
-            Remote myRemote;
-
-            // Example usage of the class:
-            // Call the 'updateMode' function to set the mode of 'myRemote'.
-            myRemote.updateMode(1);
-
-            // Call the 'setButtonHeld' function to indicate a button is being held.
-            myRemote.setButtonHeld(true);
-
-            // Use the member variables:
-            // Check and print the current mode and button hold state of 'myRemote'.
-            std::cout << "Current mode: " << static_cast<int>(myRemote.mode) << std::endl;
-            std::cout << "Is a button held: " << (myRemote.isButtonHeld ? "Yes" : "No") << std::endl; 
         }
     }
 
