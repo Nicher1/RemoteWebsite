@@ -52,9 +52,10 @@ uint64_t read_from_serial(HANDLE hSerial){
     const DWORD bufSize = 256;
     char tmpChar;
 
-    if (ReadFile(hSerial, &tmpChar, 1, &bytesRead, NULL) && bytesRead > 0) {
+    while(1){
+        
+        if (ReadFile(hSerial, &tmpChar, 1, &bytesRead, NULL) && bytesRead > 0) {
             // Append the read character to the string
-            data += tmpChar;
 
             // Check for the delimiter
             if (tmpChar == '\n') { // Modify if your delimiter is different
@@ -70,11 +71,15 @@ uint64_t read_from_serial(HANDLE hSerial){
                 
                 return dataInt;
             }
+        
+            data += tmpChar;
+
         } else {
             // Handle error or no data
             return 0;
         
         }
+    }
 }
 
 int main() {
