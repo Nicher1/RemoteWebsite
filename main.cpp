@@ -1,10 +1,8 @@
 #include <windows.h>
 #include <iostream>
 #include <string>
-#include <cstdint> //include for uint_x variables not in std.
-
-#define IR_REMOTE_1_1 0xFFA25D
-#define IR_REMOTE_2_1 0xFF629D
+#include <stdint.h> //include for uint_x variables not in std.
+#include "remote_values.h"
 
 // Define the 'Remote' class.
 class Remote {
@@ -32,13 +30,13 @@ public:
     }
 };
 
-void button_command(u_int64 command){
+void button_command(uint64_t command){
     switch (command) {
     case IR_REMOTE_1_1:
         std::cout << "Command 1 was pressed \n";
         break;
 
-    case IR_REMOTE_2_1:
+    case IR_REMOTE_1_2:
         std::cout << "Command 2 was pressed \n";
         break;
 
@@ -66,7 +64,7 @@ int main() {
     */
 
     // Open the serial port
-    HANDLE hSerial = CreateFile("COM8",
+    HANDLE hSerial = CreateFile("COM3",
                                 GENERIC_READ | GENERIC_WRITE,
                                 0,
                                 0,
@@ -93,7 +91,7 @@ int main() {
     const DWORD bufSize = 256;
     char tmpChar;
     std::string receivedData;
-    u_int64 command;
+    uint64_t command;
 
     while (1) {
         if (ReadFile(hSerial, &tmpChar, 1, &bytesRead, NULL) && bytesRead > 0) {
