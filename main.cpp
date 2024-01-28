@@ -33,14 +33,91 @@ public:
 void button_command(uint64_t command){
     switch (command) {
     case IR_REMOTE_1_1:
-        std::cout << "Command 1 was pressed \n";
+        std::cout << "Command 1_1\n";
         break;
 
     case IR_REMOTE_1_2:
-        std::cout << "Command 2 was pressed \n";
+        std::cout << "Command 1_2\n";
+        break;
+
+    case IR_REMOTE_1_3:
+        std::cout << "Command 1_3\n";
+        break;
+
+    case IR_REMOTE_2_1:
+        std::cout << "Command 2_1\n";
+        break;
+
+    case IR_REMOTE_2_2:
+        std::cout << "Command 2_2\n";
+        break;
+
+    case IR_REMOTE_2_3:
+        std::cout << "Command 2_3\n";
+        break;
+
+    case IR_REMOTE_3_1:
+        std::cout << "Command 3_1(minus)\n";
+        break;
+
+    case IR_REMOTE_3_2:
+        std::cout << "Command 3_2\n";
+        break;
+
+    case IR_REMOTE_3_3:
+        std::cout << "Command 3_3(plus)\n";
+        break;
+
+    case IR_REMOTE_4_1:
+        std::cout << "Command 3_1\n";
+        break;
+
+    case IR_REMOTE_4_2:
+        std::cout << "Command 4_2\n";
+        break;
+
+    case IR_REMOTE_4_3:
+        std::cout << "Command 4_3\n";
+        break;
+
+    case IR_REMOTE_5_1:
+        std::cout << "1\n";
+        break;
+
+    case IR_REMOTE_5_2:
+        std::cout << "2\n";
+        break;
+
+    case IR_REMOTE_5_3:
+        std::cout << "3\n";
+        break;
+
+    case IR_REMOTE_6_1:
+        std::cout << "4\n";
+        break;
+
+    case IR_REMOTE_6_2:
+        std::cout << "5\n";
+        break;
+
+    case IR_REMOTE_6_3:
+        std::cout << "6\n";
+        break;
+
+    case IR_REMOTE_7_1:
+        std::cout << "7\n";
+        break;
+
+    case IR_REMOTE_7_2:
+        std::cout << "8\n";
+        break;
+
+    case IR_REMOTE_7_3:
+        std::cout << "9\n";
         break;
 
     default:
+        std::cout << "HOLD YOUR HAND STILL YOU F*CKING IDIOT!\n";
         break;
     }
 }
@@ -60,15 +137,16 @@ uint64_t read_from_serial(HANDLE hSerial){
             // Check for the delimiter
             if (tmpChar == '\n') { // Modify if your delimiter is different
                 // Process the data
-                std::cout << "Data read from serial port: " << data;
+
+                //std::cout << data;
 
                 try {
                     dataInt = stoi(data, 0, 16); 
                     }
                     catch(const std::exception& e) {
-                    std::cerr << e.what() << '\n';
+                    //std::cerr << e.what() << '\n';
                     }
-                
+                Sleep(100);
                 return dataInt;
             }
         
@@ -102,7 +180,7 @@ int main() {
 
     // Open the serial port
 
-    HANDLE hSerial = CreateFile("COM3",
+    HANDLE hSerial = CreateFile("COM7",
                                 GENERIC_READ | GENERIC_WRITE,
                                 0,
                                 0,
