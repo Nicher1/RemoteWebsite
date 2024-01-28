@@ -45,6 +45,38 @@ void button_command(uint64_t command){
     }
 }
 
+uint64_t read_from_serial(HANDLE hSerial){
+    std::string data;
+    uint64_t dataInt;
+    DWORD bytesRead;
+    const DWORD bufSize = 256;
+    char tmpChar;
+
+    if (ReadFile(hSerial, &tmpChar, 1, &bytesRead, NULL) && bytesRead > 0) {
+            // Append the read character to the string
+            data += tmpChar;
+
+            // Check for the delimiter
+            if (tmpChar == '\n') { // Modify if your delimiter is different
+                // Process the data
+                std::cout << "Data read from serial port: " << data;
+
+                try {
+                    dataInt = stoi(data, 0, 16); 
+                    }
+                    catch(const std::exception& e) {
+                    std::cerr << e.what() << '\n';
+                    }
+                
+                return dataInt;
+            }
+        } else {
+            // Handle error or no data
+            return 0;
+        
+        }
+}
+
 int main() {
     /*
     // Create an instance of the Remote class named 'myRemote'.
@@ -64,6 +96,7 @@ int main() {
     */
 
     // Open the serial port
+
     HANDLE hSerial = CreateFile("COM3",
                                 GENERIC_READ | GENERIC_WRITE,
                                 0,
@@ -73,7 +106,7 @@ int main() {
                                 0);
     if (hSerial == INVALID_HANDLE_VALUE) {
         std::cerr << "Error opening serial port" << std::endl;
-        return 1;
+       return 1;
     }
 
     // Set parameters
@@ -86,40 +119,16 @@ int main() {
     dcbSerialParams.Parity = NOPARITY;
     SetCommState(hSerial, &dcbSerialParams);
 
-    // Read data
-    DWORD bytesRead;
-    const DWORD bufSize = 256;
-    char tmpChar;
-    std::string receivedData;
-    uint64_t command;
+    uint64_t recievedData;
 
     while (1) {
-        if (ReadFile(hSerial, &tmpChar, 1, &bytesRead, NULL) && bytesRead > 0) {
-            // Append the read character to the string
-            receivedData += tmpChar;
-
-            // Check for the delimiter
-            if (tmpChar == '\n') { // Modify if your delimiter is different
-                // Process the data
-                std::cout << "Data read from serial port: " << receivedData;
-
-                try {
-                    command = stoi(receivedData, 0, 16); 
-                    button_command(command);
-                }
-                catch(const std::exception& e) {
-                    std::cerr << e.what() << '\n';
-                }
-                
-                
-                // Clear the received data for the next message
-                receivedData.clear();
-            }
-        } else {
-            // Handle error or no data
-            std::cerr << "Error reading from serial port or no data available" << std::endl;
-        
+        recievedData = read_from_serial(hSerial);
+        if (!recievedData) {
+            std::cout << "Error reading from serial or no data available";
+        } else{
+            button_command(recievedData);
         }
+        
     }
 
     // Close the serial port
